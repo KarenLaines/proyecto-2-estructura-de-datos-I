@@ -1,7 +1,11 @@
 from node import Node
 from typing import TypeVar, Generic
 
+
+
 T = TypeVar('T')
+
+
 class CircularList(Generic[T]):
     def __init__(self):
         self.__head: Node[T] | None = None
