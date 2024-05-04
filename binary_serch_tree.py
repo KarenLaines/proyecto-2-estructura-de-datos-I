@@ -110,14 +110,26 @@ class BinaryTree:
             else:
                 return self.__min_recursive(node.left)
 
-    def draw_tree(self):
+    def height(self) -> int:
+        print(self.__height_recursive(self.__root))
+        return self.__height_recursive(self.__root)
+
+    def __height_recursive(self, node: Node[T]) -> int:
+        if node is None:
+            return 0
+        else:
+            return 1 + max(self.__height_recursive(node.left), self.__height_recursive(node.right))
+
+    def main(self):
         root = tk.Tk()
         root.title("Árbol Binario")
 
-        canvas = tk.Canvas(root, width=5000, height=5000)
-        canvas.pack()
+        self.actions(root)
 
-        self.draw_tree_recursive(canvas=canvas, node=self.__root, x=400, y=50, x_dist=200, y_dist=100)
+        canvas = tk.Canvas(root, width=1800, height=1600)
+        canvas.grid(row=0, column=1)
+
+        self.draw_tree_recursive(canvas=canvas, node=self.__root, x=900, y=50, x_dist=200, y_dist=100)
         root.mainloop()
 
     def draw_tree_recursive(self, canvas, node, x, y, x_dist, y_dist):
@@ -131,18 +143,48 @@ class BinaryTree:
             x_left = x - x_dist
             y_left = y + y_dist
             canvas.create_line(x, y, x_left, y_left)
-            self.draw_tree_recursive(canvas, node.left, x_left, y_left, x_dist / 2, y_dist)
+            self.draw_tree_recursive(canvas, node.left, x_left, y_left, x_dist * 0.7, y_dist)
         if node.right:
             x_right = x + x_dist
             y_right = y + y_dist
             canvas.create_line(x, y, x_right, y_right)
-            self.draw_tree_recursive(canvas, node.right, x_right, y_right, x_dist / 2, y_dist)
+            self.draw_tree_recursive(canvas, node.right, x_right, y_right, x_dist * 0.7, y_dist)
+
+    def actions(self, root):
+        def on_entry_click(event):
+            if entry.get() == 'Ingrese valor a...':
+                entry.delete(0, "end")  # Borra el texto actual en el cuadro de texto
+                entry.insert(0, '')  # Inserta texto vacío para que el usuario pueda escribir
+                entry.config(fg='black', font=('Courier', 20))  # Cambia el color del texto a negro
+
+        def on_focusout(event):
+            if entry.get() == '':
+                entry.insert(0, 'Ingrese valor a...')
+                entry.config(fg='grey', font=('Courier', 20))  # Cambia el color del texto a gris
+
+        frame_buttons = tk.Frame(root)
+
+        entry = tk.Entry(frame_buttons, font=('Courier', 20))
+        entry.insert(0, 'Ingrese valor a...')
+        entry.bind('<FocusIn>', on_entry_click)
+        entry.bind('<FocusOut>', on_focusout)
+
+        button_insert = tk.Button(frame_buttons, text="INSERTAR", font=('Courier', 15),
+                                  command=lambda: self.insert(entry.get()))
+        button_delete = tk.Button(frame_buttons, text="ELIMINAR", font=('Courier', 15))
+        button_serch = tk.Button(frame_buttons, text="BUSCAR", font=('Courier', 15))
+
+        entry.pack(fill='both', padx=5, pady=15)
+        button_insert.pack(fill='both', padx=5, pady=5)
+        button_delete.pack(fill='both', padx=5, pady=5)
+        button_serch.pack(fill='both', padx=5, pady=5)
+
+        frame_buttons.grid(row=0, column=0, sticky="nsew")
 
 
 a = BinaryTree()
 
-for i in range(50):
+for i in range(40):
     a.insert(random.randint(0, 500))
 
-a.draw_tree()
-a.recorridos()
+a.main()
