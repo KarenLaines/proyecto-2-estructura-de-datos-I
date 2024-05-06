@@ -19,3 +19,6 @@ if __name__ == "__main__":
     cdll.print_list()  # Salida esperada: 0 1 2 3
     cdll.delete(2)
     cdll.print_list()  # Salida esperada: 0 1 3
+
+
+
