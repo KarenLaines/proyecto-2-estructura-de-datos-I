@@ -18,6 +18,10 @@ class Node(Generic[T]):
     def data(self):
         return self.__data
 
+    @data.setter
+    def data(self, new_data):
+        self.__data = new_data
+
     @property
     def left(self):
         return self.__left
