@@ -1,6 +1,5 @@
 from node import Node
-from typing import TypeVar, Generic
-
+from typing import TypeVar, Generic, Optional
 
 
 T = TypeVar('T')
@@ -14,61 +13,121 @@ class CircularList(Generic[T]):
         self.__current: Node[T] | None = None
         self.__fin = False
 
-    def append(self, data: T):
+# Insertar al inicio y al final
+    def prepend(self, data: T):
         new_node = Node(data)
         if self.is_empty():
-            self.__head = new_node
-            self.__tail = new_node
-        else:
-            self.__tail.next = new_node
-            self.__tail = new_node
-        new_node.next = self.__head
-        self.__size += 1
-
-    def preppend(self, data: T):
-        new_node = Node(data)
-        if self.is_empty():
-            self.__head = new_node
-            self.__tail = new_node
+            self.__head = self.__tail = new_node
         else:
             new_node.next = self.__head
             self.__head = new_node
-            self.__tail.next = self.__head
+            self.__tail.next = self.__head  # Asegurar conectividad circular
         self.__size += 1
 
-    def is_empty(self) -> bool:
-        return self.__head is None and self.__tail is None
-
-    def shift(self):
+    def append(self, data):
+        new_node = Node(data)
         if self.is_empty():
-            raise ReferenceError("La Lista esta vacia")
-        elif self.__head == self.__tail:
-            self.__head = None
-            self.__tail = None
-            self.__size = 0
+            self.__head = self.__tail = new_node
         else:
-            current = self.__head
+            self.__tail.next = new_node
+            self.__tail = new_node
+            self.__tail.next = self.__head  # Mantener conectividad circular
+        self.__size += 1
+
+    # Eliminar al inicio y al final
+    def pop_first(self):
+        if self.is_empty():
+            raise ReferenceError("La Lista esta vacía")
+        elif self.__head == self.__tail:
+            self.__head = self.__tail = None
+        else:
             self.__head = self.__head.next
-            self.__tail.next = self.__head
-            current.next = None
-            self.__size -= 1
-            return current.data
+            self.__tail.next = self.__head  # Mantener conexión circular
+        self.__size -= 1
 
     def pop(self):
         if self.is_empty():
-            raise ReferenceError("La Lista esta vacia")
+            raise ReferenceError("La Lista esta vacía")
         elif self.__head == self.__tail:
+            data = self.__head.data
             self.__head = None
             self.__tail = None
             self.__size = 0
+            return data
         else:
-            current = self.__tail
+            node_to_remove = self.__tail
             previous = self.find_at(self.__size-2)
-            current.next = None
             self.__tail = previous
             self.__tail.next = self.__head
+            node_to_remove.next = None
             self.__size -= 1
-            return current.data
+            return node_to_remove.data
+
+# Buscar valor
+    def search(self, element: str) -> Optional [T]:
+        if self.is_empty():
+            return None  # La lista está vacía, no hay nada que buscar
+
+        current = self.__head
+        while True:
+            if str(current.data).strip() == element:  # Compara el valor del nodo con el valor buscado
+                return current  # Si se encuentra, devuelve el nodo
+
+            current = current.next
+
+            if current == self.__head:  # Si volvemos al principio, hemos recorrido la lista completa
+                break
+
+        return None  # Si no se encuentra, devuelve None
+
+    # Rotar a la derecha y a la izquierda
+    def right_rotation(self):
+        if self.is_empty():
+            raise ReferenceError("La Lista esta vacía")
+        current = self.__head
+        while current.next != self.__tail:
+            current = current.next
+        self.__tail.next = self.__head
+        self.__head = self.__tail
+        self.__tail = current
+        self.__tail.next = self.__head  # Mantener conexión circular
+
+    def left_rotation(self):
+        if self.is_empty():
+            raise ReferenceError("La Lista esta vacía")
+
+        elif self.__head == self.__tail:
+            return self.__head.data
+
+        current = self.__head.next
+
+        self.__tail.next = self.__head
+        self.__tail = self.__head
+
+        self.__head = current
+        self.__tail.next = self.__head
+
+
+    def display(self):
+        if self.is_empty():
+            return "La lista está vacía"
+
+        current = self.__head
+        elements = []
+        max_iterations = 2 * self.__size  # Seguridad adicional para evitar bucles infinitos
+
+        for _ in range(max_iterations):
+            elements.append(current.data)
+            current = current.next
+
+            if current is self.__head:
+                break
+        else:
+            raise RuntimeError("Conectividad incorrecta en la lista circular")
+
+        return elements
+
+    # Métodos auxiliares
 
     def find_at(self, index: int):
         current = self.__head
@@ -80,6 +139,8 @@ class CircularList(Generic[T]):
                 current = current.next
 
         raise IndexError("La pocicion no existe")
+    def is_empty(self) -> bool:
+        return self.__head is None and self.__tail is None
 
     def __iter__(self):
         self.__current = self.__head
@@ -87,7 +148,7 @@ class CircularList(Generic[T]):
 
     def __next__(self):
         if self.is_empty():
-            print("La lista esta vacia")
+            print("La lista esta vacía")
             raise StopIteration
         if self.__fin:
             self.__fin = False
