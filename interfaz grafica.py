@@ -2,15 +2,22 @@ import tkinter as tk
 from tkinter import messagebox
 from main import linked_list
 from main import circular_list
+from PIL import Image, ImageTk
 
 
 window = tk.Tk()
 window.geometry("400x400")
 window.title("GESTIÓN DE LISTAS")
 
-main_menu_frame = tk.Frame(window)
-main_menu_frame.pack(padx=20, pady=20)
 
+canvas = tk.Canvas(window, width=400, height=400)
+canvas.pack(fill='both', expand=True)
+
+image = Image.open("C:/Users/USUARIO\Documents\Elementos para programas, fondos, etc\wallpaper.jpg")
+background_image = ImageTk.PhotoImage(image)
+
+
+canvas.create_image(0, 0, anchor="nw", image=background_image)
 
 # LISTA ENLAZADA
 
@@ -84,8 +91,8 @@ def show_linked_list_menu():
     display_button.grid(row=5, column=1, padx=20, pady=20)
 
 
-main_linked_list_button = tk.Button(window, text="Lista Enlazada", command=show_linked_list_menu, bg='light blue',
-                                    width=40, height=5, font=('arial', 10))
+main_linked_list_button = tk.Button(canvas, text="Lista Enlazada", command=show_linked_list_menu, bg='darkblue',
+                                    width=40, height=5, font=('arial', 10, 'bold'), fg='white')
 main_linked_list_button.pack(pady=50)
 
 # LISTA CIRCULAR
@@ -96,7 +103,7 @@ main_linked_list_button.pack(pady=50)
 def show_circular_list_menu():
     submenu = tk.Toplevel(window)
     submenu.title("Lista Circular")
-    submenu.geometry("1100x700")
+    submenu.geometry("700x600")
 
     prepend_button = tk.Button(submenu, text="Agregar elemento al inicio",
                                command=lambda: (add_to_front(), display_list()), bg='light blue',
@@ -146,8 +153,8 @@ def show_circular_list_menu():
         display_text = circular_list.display()
         label.config(text=display_text)
 
-    label = tk.Label(submenu, font=15)
-    label.grid(row=4, column=6, padx=30, pady=30)
+    label = tk.Label(submenu)
+    label.grid(row=9, column=1, padx=30, pady=30)
 
     pop_first_button = tk.Button(submenu, text="Eliminar el primer elemento",
                                  command=lambda: (circular_list.pop_first(), display_list()),
@@ -176,8 +183,8 @@ def show_circular_list_menu():
     display_button.grid(row=7, column=1, padx=20, pady=20)
 
 
-main_circular_list_button = tk.Button(window, text="Lista Circular", command=show_circular_list_menu, bg='light blue',
-                                    width=40, height=5, font=('arial', 10))
+main_circular_list_button = tk.Button(canvas, text="Lista Circular", command=show_circular_list_menu, bg='darkblue',
+                                    width=40, height=5, font=('arial', 10, 'bold'), fg='white')
 main_circular_list_button.pack(pady=20)
 
 window.mainloop()

@@ -2,25 +2,45 @@ import tkinter as tk
 from tkinter import messagebox
 from main import linked_list
 from main import circular_list
+from PIL import Image, ImageTk
 
 
 window = tk.Tk()
 window.geometry("400x400")
 window.title("GESTIÓN DE LISTAS")
 
-main_menu_frame = tk.Frame(window)
-main_menu_frame.pack(padx=20, pady=20)
 
+canvas = tk.Canvas(window, width=400, height=400)
+canvas.pack(fill='both', expand=True)
+
+image = Image.open("C:/Users/USUARIO\Documents\Elementos para programas, fondos, etc\wallpaper.jpg")
+background_image = ImageTk.PhotoImage(image)
+
+
+canvas.create_image(0, 0, anchor="nw", image=background_image)
 
 # LISTA ENLAZADA
 
 # Botón de prepend
+
+
 def show_linked_list_menu():
     submenu = tk.Toplevel(window)
     submenu.title("Lista Enlazada")
     submenu.geometry("700x600")
 
-    prepend_button = tk.Button(submenu, text="Agregar elemento al inicio", command=lambda: (add_to_front()),
+    # ------------------------------------
+    canvas_sub = tk.Canvas(submenu, width=600, height=600)
+    canvas_sub.pack(fill='both', expand=True)
+
+    image_sub = Image.open("C:/Users/USUARIO/Documents/Elementos para programas, fondos, etc/wallpaper.jpg")
+    background_image_sub = ImageTk.PhotoImage(image_sub)
+
+    canvas_sub.create_image(0, 0, anchor="nw", image=background_image_sub)
+
+    # ----------------------------------
+
+    prepend_button = tk.Button(canvas_sub, text="Agregar elemento al inicio", command=lambda: (add_to_front()),
                                bg='light blue', width=25, height=2, fg='blue')
     append_button = tk.Button(submenu, text="Agregar elemento al final", command=lambda: (add_to_end()),
                               bg='light blue', width=25, height=2, fg='blue')
@@ -84,8 +104,8 @@ def show_linked_list_menu():
     display_button.grid(row=5, column=1, padx=20, pady=20)
 
 
-main_linked_list_button = tk.Button(window, text="Lista Enlazada", command=show_linked_list_menu, bg='light blue',
-                                    width=40, height=5, font=('arial', 10))
+main_linked_list_button = tk.Button(canvas, text="Lista Enlazada", command=show_linked_list_menu, bg='darkblue',
+                                    width=40, height=5, font=('arial', 10, 'bold'), fg='white')
 main_linked_list_button.pack(pady=50)
 
 # LISTA CIRCULAR
@@ -176,8 +196,8 @@ def show_circular_list_menu():
     display_button.grid(row=7, column=1, padx=20, pady=20)
 
 
-main_circular_list_button = tk.Button(window, text="Lista Circular", command=show_circular_list_menu, bg='light blue',
-                                    width=40, height=5, font=('arial', 10))
+main_circular_list_button = tk.Button(canvas, text="Lista Circular", command=show_circular_list_menu, bg='darkblue',
+                                    width=40, height=5, font=('arial', 10, 'bold'), fg='white')
 main_circular_list_button.pack(pady=20)
 
 window.mainloop()
