@@ -35,7 +35,7 @@ class DoublyLinkedList:
     def insert_at_position(self, data, position):
         if position <= 0:
             self.insert_at_beginning(data)
-        elif position >= self.length():
+        elif position >= self.length()+1:
             self.insert_at_end(data)
         else:
             new_node = Node(data)
@@ -69,9 +69,9 @@ class DoublyLinkedList:
         self.tail = current
 
     def delete_at_position(self, position):
-        if position <= 0:
+        if position <= 1:
             self.delete_first_node()
-        elif position >= self.length() -1:
+        elif position >= self.length() - 1:
             self.delete_last_node()
         else:
             current = self.head
@@ -84,16 +84,24 @@ class DoublyLinkedList:
         current = self.head
         while current:
             if current.data == data:
-                if current.prev:
-                    current.prev.next = current.next
-                else:
-                    self.head = current.next
-                if current.next:
-                    current.next.prev = current.prev
-                else:
-                    self.tail = current.prev
+                if current.prev is None:
+                    self.delete_first_node()
+                    return
+                if current.next is None:
+                    self.delete_last_node()
+                    return
+                current.prev.next = current.next
+                current.next.prev = current.prev
                 return
             current = current.next
+
+    def find_node_by_value(self, value):
+        current = self.head
+        while current:
+            if current.data == value:
+                return current
+            current = current.next
+        return None
 
     def save_to_file(self, filename):
         with open(filename, 'w') as file:
@@ -122,7 +130,7 @@ class DoublyLinkedListGUI:
     def __init__(self, master):
         self.master = master
         self.master.title("Doubly Linked List")
-        self.master.geometry("300x200")
+        self.master.geometry("300x300")
 
         self.doubly_linked_list = DoublyLinkedList()
 
@@ -149,6 +157,9 @@ class DoublyLinkedListGUI:
 
         self.delete_position_button = tk.Button(master, text="Delete Position", command=self.delete_position)
         self.delete_position_button.pack()
+
+        self.find_button = tk.Button(master, text="Find", command=self.find_value)
+        self.find_button.pack()
 
         self.display_label = tk.Label(master, text="Doubly Linked List:")
         self.display_label.pack()
@@ -189,6 +200,25 @@ class DoublyLinkedListGUI:
         position = int(simpledialog.askstring("Position", "Enter position:"))
         self.doubly_linked_list.delete_at_position(position)
         self.display()
+
+    def find_value(self):
+        value = self.entry.get()
+        node = self.doubly_linked_list.find_node_by_value(value)
+        if node:
+            self.highlight_node(node)
+        else:
+            tk.messagebox.showinfo("Info", f"Value '{value}' not found.")
+
+    def highlight_node(self, node):
+        self.display_text.tag_config("highlight", background="yellow")
+        self.display_text.mark_set("highlight_start", "1.0")
+        self.display_text.mark_set("highlight_end", "end")
+        self.display_text.tag_remove("highlight", "highlight_start", "highlight_end")
+        start_index = self.display_text.search(str(node.data), "highlight_start", "highlight_end")
+        while start_index:
+            end_index = f"{start_index}+{len(str(node.data))}c"
+            self.display_text.tag_add("highlight", start_index, end_index)
+            start_index = self.display_text.search(str(node.data), end_index, "highlight_end")
 
     def display(self):
         self.display_text.delete(1.0, tk.END)
