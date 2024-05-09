@@ -10,3 +10,6 @@ Temas: Lista enlazada y circular
 
 Sebastian Josue Siquina Tzun 1581223
 Temas: Arbol binario y arbol binario de busqueda
+
+Link del Video:
+https://youtu.be/gOGlj5q3P3w
