@@ -207,7 +207,7 @@ class DoublyLinkedListGUI:
         if node:
             self.highlight_node(node)
         else:
-            tk.messagebox.showinfo("Info", f"Value '{value}' not found.")
+            tk.messagebox.showinfo("Info", f"Valor '{value}' no encontrado.")
 
     def highlight_node(self, node):
         self.display_text.tag_config("highlight", background="yellow")
